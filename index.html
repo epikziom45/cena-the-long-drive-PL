@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cena gry "The Long Drive" na Steam</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <h1>Cena gry "The Long Drive" na Steam</h1>
+  <p id="price"></p>
+  <p id="discount"></p>
+
+  <script>
+    function updatePrice() {
+      // Użyj API Steam, aby uzyskać aktualne informacje o cenie i promocjach
+      const appId = 1017180;
+      const apiUrl = `https://cors-anywhere.herokuapp.com/https://store.steampowered.com/api/appdetails?appids=${appId}&cc=PL&filters=price_overview`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          const game = data[appId].data;
+          const price = game.price_overview.final / 100;
+          const discount = game.price_overview.discount_percent;
+
+          document.querySelector("#price").innerHTML = `Aktualna cena: ${price} PLN`;
+          
+          if (discount > 0) {
+            document.querySelector("#discount").innerHTML = `Obecna promocja: ${discount}%`;
+          } else {
+            document.querySelector("#discount").innerHTML = "Brak obecnie trwającej promocji";
+          }
+        });
+    }
+
+    // Odśwież cenę co 30 sekund
+    setInterval(updatePrice, 30000);
+
+    // Uruchom funkcję po załadowaniu strony
+    updatePrice();
+  </script>
+</body>
+</html>
